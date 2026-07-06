@@ -35,7 +35,7 @@ llm = ChatGroq(
     api_key=GROQ_API_KEY
 )
 
-embeddings = HuggingFaceEmbeddings(model_name='sentence-transformers/all-mpnet-base-v2')
+embeddings = HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2')
 
 vector_db = None
 pdf_topics = {}
