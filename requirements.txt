@@ -8,7 +8,6 @@ langchain-chroma
 langchain-text-splitters
 langchain-huggingface
 chromadb
-sentence-transformers
 pypdf
 duckduckgo-search
 ddgs
