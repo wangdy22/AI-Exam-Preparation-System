@@ -1429,57 +1429,57 @@ may be processed by an external AI service to generate responses.
             outputs=weak_table
         )
 
-    with gr.Tab("ML Risk Test Dashboard"):
-        test_btn = gr.Button("Run ML Evaluation")
-        test_out = gr.Markdown()
+    # with gr.Tab("ML Risk Test Dashboard"):
+    #     test_btn = gr.Button("Run ML Evaluation")
+    #     test_out = gr.Markdown()
 
-        test_btn.click(
-            test_ml_risk,
-            outputs=test_out
-        )
+    #     test_btn.click(
+    #         test_ml_risk,
+    #         outputs=test_out
+    #     )
 
-    with gr.Tab("Dataset Dashboard"):
-        gr.Markdown("## 📊 Dataset Dashboard")
-        dataset_table = gr.Dataframe(
-        value=get_dataset_df(),
-        interactive=False,
-        wrap=True
-        )
+    # with gr.Tab("Dataset Dashboard"):
+    #     gr.Markdown("## 📊 Dataset Dashboard")
+    #     dataset_table = gr.Dataframe(
+    #     value=get_dataset_df(),
+    #     interactive=False,
+    #     wrap=True
+    #     )
 
-        with gr.Row():
-            refresh_btn = gr.Button("🔄 Refresh Dataset")
-            download_btn = gr.Button("⬇️ Download CSV")
+    #     with gr.Row():
+    #         refresh_btn = gr.Button("🔄 Refresh Dataset")
+    #         download_btn = gr.Button("⬇️ Download CSV")
 
-        csv_file = gr.File(label="Dataset CSV")
+    #     csv_file = gr.File(label="Dataset CSV")
 
-        refresh_btn.click(
-            fn=refresh_dataset,
-            outputs=dataset_table
-        )
+    #     refresh_btn.click(
+    #         fn=refresh_dataset,
+    #         outputs=dataset_table
+    #     )
 
-        download_btn.click(
-            fn=download_dataset_csv,
-            outputs=csv_file
-        )
+    #     download_btn.click(
+    #         fn=download_dataset_csv,
+    #         outputs=csv_file
+    #     )
 
-    with gr.Tab("Agent Trace"):
-        trace_topic = gr.Dropdown(choices=[], label="Topic")
+    # with gr.Tab("Agent Trace"):
+    #     trace_topic = gr.Dropdown(choices=[], label="Topic")
 
-        load_trace_btn = gr.Button("Load Topics")
-        run_trace_btn = gr.Button("Run Trace")
+    #     load_trace_btn = gr.Button("Load Topics")
+    #     run_trace_btn = gr.Button("Run Trace")
 
-        trace = gr.Textbox(label="Agent Trace", lines=25)
+    #     trace = gr.Textbox(label="Agent Trace", lines=25)
 
-        load_trace_btn.click(
-            lambda: gr.update(choices=get_topic_choices()),
-            outputs=trace_topic
-        )
+    #     load_trace_btn.click(
+    #         lambda: gr.update(choices=get_topic_choices()),
+    #         outputs=trace_topic
+    #     )
 
-        run_trace_btn.click(
-            ask_topic_trace,
-            inputs=trace_topic,
-            outputs=trace
-        )
+    #     run_trace_btn.click(
+    #         ask_topic_trace,
+    #         inputs=trace_topic,
+    #         outputs=trace
+    #     )
 
 if __name__ == "__main__":
     demo.launch(
