@@ -1320,6 +1320,12 @@ with gr.Blocks(theme=theme, css=CUSTOM_CSS) as demo:
 
     gr.Markdown('# 🎓 AI Exam Preparation System')
 
+    gr.Markdown("""
+>**Privacy Notice:**
+Please avoid uploading confidential, proprietary, or personal documents, as uploaded content
+may be processed by an external AI service to generate responses.
+""")
+
     with gr.Tab('Upload PDFs'):
         files = gr.File(file_count='multiple')
         process_btn = gr.Button('Process PDFs')
