@@ -412,10 +412,24 @@ def generate_quiz(topic):
 
     global current_quiz, current_quiz_topic
 
-    context = retrieve_context(topic)
+    context = retrieve_context(topic, k=8)
 
     prompt = f'''
     Using ONLY the supplied PDF context, create exactly 5 MCQs.
+
+    Strict accuracy rules:
+    - Every question, option, and answer must be verifiable from the
+      context below. Do not use outside knowledge, and do not infer a
+      classification, category, or relationship that is not explicitly
+      stated in the context.
+    - If the context groups or contrasts items (for example, labels
+      some items as one category and other items as a different
+      category), preserve that grouping exactly as written -- do not
+      merge distinct categories into one, and do not assume items are
+      similar just because they appear in the same list or sentence.
+    - If you are not confident a question can be answered correctly and
+      unambiguously from the context, write a different, simpler
+      question instead of guessing.
 
     Return ONLY valid JSON in this format:
 
@@ -425,13 +439,13 @@ def generate_quiz(topic):
           "question":"...",
           "options":["A","B","C","D"],
           "answer":"A",
-          "explanation":"Why the answer is correct"
+          "explanation":"Why the answer is correct, citing the relevant part of the context"
         }}
       ]
     }}
 
     Context:
-    {context[:3000]}
+    {context}
     '''
 
     response = llm.invoke(prompt).content
