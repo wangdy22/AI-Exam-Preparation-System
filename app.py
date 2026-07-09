@@ -20,8 +20,8 @@ weakness_features = None
 def load_weak_model():
     global weakness_model, weakness_features
     try:
-        weakness_model = joblib.load('./weakness_model.pkl')
-        weakness_features = joblib.load('./features.pkl')
+        weakness_model = joblib.load('./weakness_model.joblib')
+        weakness_features = joblib.load('./features.joblib')
         return 'Model loaded'
     except:
         return 'Please upload the model first'
@@ -1060,7 +1060,7 @@ def get_status(row):
 def predict_weak_topics():
 
     if weakness_model is None:
-        return pd.DataFrame({"Status":["Load weakness_model.pkl first"]})
+        return pd.DataFrame({"Status":["Load weakness_model first"]})
 
     df=build_topic_feature_df()
 
