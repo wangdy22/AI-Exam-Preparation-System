@@ -1316,7 +1316,7 @@ theme = gr.themes.Soft(
     radius_size='lg'
 )
 
-with gr.Blocks(theme=theme, css=CUSTOM_CSS) as demo:
+with gr.Blocks(theme=theme, css=CUSTOM_CSS, title="AI Exam Prep System") as demo:
 
     gr.Markdown('# 🎓 AI Exam Preparation System')
 
