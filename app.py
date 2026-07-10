@@ -414,22 +414,73 @@ def generate_quiz(topic):
 
     context = retrieve_context(topic, k=8)
 
+    route = route_query(topic)
+
+    web_context = ""
+    if route in ("web", "both"):
+        web_context = web_research(
+            f"{topic} explained: definition, key concepts, examples"
+        )
+
+    if route == "pdf":
+        context = pdf_context
+        source_note = (
+            'NOTE: the context below comes entirely from the uploaded PDF(s).'
+        )
+    elif route == "both":
+        context = (
+            f"--- From uploaded PDF ---\n{pdf_context}\n\n"
+            f"--- From web search (supplementary) ---\n{web_context}"
+        )
+        source_note = (
+            'NOTE: the uploaded PDF(s) only partially cover this topic. '
+            'Prefer the PDF portion when it already answers something; '
+            'use the web portion only to fill gaps the PDF does not cover.'
+        )
+    else:
+        context = (
+            f"--- From uploaded PDF (weak match -- may not actually be "
+            f"about \"{topic}\"; use it ONLY if it genuinely explains this "
+            f"topic, otherwise ignore it) ---\n{pdf_context}\n\n"
+            f"--- From web search ---\n{web_context}"
+        )
+        source_note = (
+            f'NOTE: the uploaded PDF(s) do not appear to cover "{topic}" '
+            'well. The PDF excerpt above may be about something else '
+            'entirely (e.g. exam logistics rather than the concept '
+            'itself) -- rely on the web search content unless the PDF '
+            'excerpt is clearly and directly on-topic.'
+        )
+
     prompt = f'''
-    Using ONLY the supplied PDF context, create exactly 5 MCQs.
+    Create exactly 5 MCQs on the topic "{topic}".
+
+    {source_note}
 
     Strict accuracy rules:
-    - Every question, option, and answer must be verifiable from the
-      context below. Do not use outside knowledge, and do not infer a
-      classification, category, or relationship that is not explicitly
-      stated in the context.
+    - A THIN quiz is always better than an OFF-TOPIC one. Every
+      question must be genuinely about "{topic}" itself. If part of
+      the context below is not actually about "{topic}" -- even if it
+      contains similar words, or sits right next to on-topic material
+      (e.g. exam structure, domain weightings, section/page numbers,
+      unrelated logistics) -- ignore that part completely. Never build
+      a question out of it just to reach 5 questions.
+    - If the genuinely on-topic material is thin, it is fine (and
+      preferred) for the 5 questions to be more basic/general about
+      "{topic}" (its definition, purpose, core characteristics) rather
+      than reaching for unrelated details to make questions harder.
+    - Every question, option, and answer must be verifiable from
+      on-topic context. Do not use outside knowledge beyond what is
+      given here, and do not infer a classification, category, or
+      relationship that is not explicitly stated in the context.
     - If the context groups or contrasts items (for example, labels
       some items as one category and other items as a different
       category), preserve that grouping exactly as written -- do not
       merge distinct categories into one, and do not assume items are
       similar just because they appear in the same list or sentence.
     - If you are not confident a question can be answered correctly and
-      unambiguously from the context, write a different, simpler
-      question instead of guessing.
+      unambiguously from on-topic context, write a different, simpler,
+      still-on-topic question instead of guessing.
 
     Return ONLY valid JSON in this format:
 
@@ -1381,7 +1432,8 @@ may be processed by an external AI service to generate responses.
         quiz_display = gr.Textbox(
             label="",
             show_label=False,
-            lines=18
+            lines=18,
+            elem_id="quiz_display_box"
         )
         gr.Markdown('### Submit Answers (A/B/C/D)')
 
@@ -1396,6 +1448,18 @@ may be processed by an external AI service to generate responses.
         ).then(
             lambda: (None, None, None, None, None),
             outputs=[q1, q2, q3, q4, q5]
+        ).then(                                    
+            fn=None,
+            inputs=None,
+            outputs=None,
+            js="""
+            () => {
+                const box = document.querySelector('#quiz_display_box textarea');
+                if (box) {
+                    box.scrollTop = 0;
+                }
+            }
+            """
         )
 
         submit_btn = gr.Button('Submit Quiz')
