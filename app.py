@@ -412,7 +412,7 @@ def generate_quiz(topic):
 
     global current_quiz, current_quiz_topic
 
-    context = retrieve_context(topic, k=8)
+    pdf_context = retrieve_context(topic, k=8)
 
     route = route_query(topic)
 
