@@ -7,7 +7,8 @@ from typing import TypedDict
 from langchain_groq import ChatGroq
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceEndpointEmbeddings
+#from langchain_huggingface import HuggingFaceEndpointEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_chroma import Chroma
 from langchain_community.tools.ddg_search import DuckDuckGoSearchRun
 from langgraph.graph import StateGraph, END
@@ -35,9 +36,17 @@ llm = ChatGroq(
     api_key=GROQ_API_KEY
 )
 
-embeddings = HuggingFaceEndpointEmbeddings(
-    model="sentence-transformers/paraphrase-MiniLM-L3-v2",
-    huggingfacehub_api_token=os.getenv("HF_TOKEN")
+# embeddings = HuggingFaceEndpointEmbeddings(
+#     model="sentence-transformers/paraphrase-MiniLM-L3-v2",
+#     huggingfacehub_api_token=os.getenv("HF_TOKEN")
+# )
+
+# Gemini Embeddings
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+embeddings = GoogleGenerativeAIEmbeddings(
+    model="gemini-embedding-001",
+    google_api_key=GEMINI_API_KEY
 )
 
 vector_db = None
@@ -276,10 +285,17 @@ def process_pdfs(files):
     splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     chunks = splitter.split_documents(docs)
 
+    # vector_db = Chroma.from_documents(
+    #     documents=chunks,
+    #     embedding=embeddings,
+    #     persist_directory="./EPS_db"
+    # )
+
     vector_db = Chroma.from_documents(
         documents=chunks,
         embedding=embeddings,
-        persist_directory="./EPS_db"
+        collection_name="eps_gemini",
+        persist_directory="./EPS_db_gemini"
     )
 
     summary = ", ".join(f"{name} ({len(t)} topics)" for name, t in pdf_topics.items())
