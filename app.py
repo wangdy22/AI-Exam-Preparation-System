@@ -36,7 +36,7 @@ llm = ChatGroq(
 )
 
 embeddings = HuggingFaceEndpointEmbeddings(
-    model="sentence-transformers/all-MiniLM-L6-v2",
+    model="sentence-transformers/paraphrase-MiniLM-L3-v2",
     huggingfacehub_api_token=os.getenv("HF_TOKEN")
 )
 
